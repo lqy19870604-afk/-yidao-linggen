@@ -149,6 +149,33 @@ function render(){
 function pick(s){let q=Q[idx];if(q.t==="rank"){if(!Array.isArray(ans[idx]))ans[idx]=[];if(!ans[idx].includes(s)&&ans[idx].length<4)ans[idx].push(s)}else{ans[idx]=s;if(q.t==="heart")heart=s}render()}
 function prevQ(){if(idx>0){idx--;render()}else show("gates")}
 function nextQ(){let q=Q[idx],a=ans[idx];if(a==null||(q.t==="rank"&&a.length!==4)){alert(q.t==="rank"?"请先完成四项排序。":"请先选择一个答案。");return}if(idx<15){idx++;render()}else score()}
+const SUPABASE_URL="https://ywrzhiujyqkgnfejvzau.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_VHo324LnN5PkOu5JH_acDA_j883kbpC";
+
+async function submitAnonymousResult(payload){
+  // One completed submission per browser session. A refresh/revisit will not duplicate the count.
+  if(sessionStorage.getItem("linggen_submitted_v6")==="1") return;
+  try{
+    const r=await fetch(SUPABASE_URL+"/rest/v1/test_results",{
+      method:"POST",
+      headers:{
+        "apikey":SUPABASE_PUBLISHABLE_KEY,
+        "Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY,
+        "Content-Type":"application/json",
+        "Prefer":"return=minimal"
+      },
+      body:JSON.stringify(payload)
+    });
+    if(r.ok){
+      sessionStorage.setItem("linggen_submitted_v6","1");
+    }else{
+      console.warn("Anonymous result upload failed:",r.status,await r.text());
+    }
+  }catch(e){
+    console.warn("Anonymous result upload failed:",e);
+  }
+}
+
 function score(){
  // Rank points: 5,3,1,0. Pairwise discriminator: 3.5 to the preferred pole.
  // This keeps second preference meaningful while giving targeted pairwise items enough power to separate close profiles.
@@ -180,6 +207,20 @@ function drawResult(pct,order,heart){
  if(spread<=7)data=["四象灵根","无偏之道","你没有特别单一的默认策略，更容易根据情境切换“试、调、究、构”四种方式。","切换能力强，也可能在选择策略时耗费更多判断。","练习先识别任务阶段：此刻最需要的是行动、适配、求因，还是建构？","四法皆可用，因境而择之。"];
  else if(gap<=6)data=combos[key2(a,b)]||[S[a].short+S[b].short+"双修","两仪问道者","你同时拥有两种接近的问道倾向。","两种策略有时会彼此拉扯。","练习根据任务阶段主动切换策略。","两仪相济，道在其中。"];
  else data=single(a);
+ const secondary=(spread<=7)?null:((gap<=6)?b:null);
+ const resultType=(spread<=7)?"四象灵根":((gap<=6)?"双修":"单灵根");
+ submitAnonymousResult({
+   sword_score:pct.sword,
+   dan_score:pct.dan,
+   fu_score:pct.fu,
+   array_score:pct.array,
+   primary_root:a,
+   secondary_root:secondary,
+   result_type:resultType,
+   result_title:data[0]+" · "+data[1],
+   heart_choice:heart||null,
+   test_version:"V6"
+ });
  document.getElementById("resultName").textContent=data[0];document.getElementById("resultTitle").textContent="「"+data[1]+"」";
  document.getElementById("desc").innerHTML=data[2]+(heart?`<br><br><b>心之所向：</b>${S[heart].name}。这不参与正式计分，它记录的是你主动认同的问道方式。`:"");
  document.getElementById("blind").textContent=data[3];document.getElementById("train").textContent=data[4];document.getElementById("motto").textContent="「"+data[5]+"」";
