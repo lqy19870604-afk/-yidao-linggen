@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>医道修仙 · 四宗实时大阵</title>
+<style>
+:root{
+  --paper:#efe6d0; --ink:#192d2b; --muted:#9fb1a8; --line:rgba(226,211,169,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#071917;color:#f3ead2;font-family:"Songti SC","STSong","Noto Serif SC",serif}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% 12%,rgba(47,105,91,.35),transparent 32%),
+    linear-gradient(rgba(4,20,18,.82),rgba(5,19,17,.94)),
+    url("https://lqy19870604-afk.github.io/-yidao-linggen/");
+  overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
+  background-image:linear-gradient(120deg,transparent 0 48%,rgba(224,205,153,.06) 49%,transparent 50% 100%);
+  background-size:44px 44px;
+}
+.wrap{width:min(1180px,94vw);margin:auto;padding:34px 0 46px}
+header{text-align:center;margin-bottom:24px}
+.kicker{letter-spacing:.35em;color:#d7c68f;font-size:13px}
+h1{font-size:clamp(32px,5vw,58px);font-weight:500;letter-spacing:.12em;margin:10px 0 8px}
+.subtitle{color:#b7c5bd;font-size:15px}
+.total{
+  margin:25px auto 22px;width:min(540px,100%);padding:20px 28px;
+  border:1px solid var(--line);border-radius:20px;text-align:center;
+  background:rgba(13,42,37,.58);backdrop-filter:blur(10px);
+  box-shadow:0 20px 60px rgba(0,0,0,.22)
+}
+.total small{display:block;color:#c8b983;letter-spacing:.25em}
+.total strong{font:500 clamp(48px,8vw,82px)/1.05 Georgia,serif;color:#fff5d7}
+.total span{color:#aabbb2}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{
+  position:relative;overflow:hidden;min-height:205px;padding:24px 18px;border-radius:18px;
+  border:1px solid var(--line);background:rgba(10,34,31,.72);box-shadow:0 14px 40px rgba(0,0,0,.18)
+}
+.card:after{content:"";position:absolute;right:-35px;bottom:-45px;width:130px;height:130px;border-radius:50%;background:var(--glow);filter:blur(12px);opacity:.2}
+.icon{font-size:30px}.name{font-size:21px;margin:10px 0 2px}.root{font-size:13px;color:#b8c5bd}
+.num{font:500 45px/1 Georgia,serif;margin-top:22px}.pct{font-size:14px;color:#c8d1cc;margin-left:5px}
+.bar{height:5px;background:rgba(255,255,255,.08);border-radius:10px;margin-top:16px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .8s ease}
+.sword{--accent:#c95b54;--glow:#d7625a}.dan{--accent:#70a879;--glow:#70a879}.fu{--accent:#6c9ed1;--glow:#6c9ed1}.array{--accent:#d7a34d;--glow:#d7a34d}
+.lower{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}
+.panel{border:1px solid var(--line);border-radius:18px;background:rgba(10,34,31,.7);padding:22px}
+.panel h2{font-size:18px;font-weight:500;margin:0 0 18px;color:#e8dcb9}
+.avgrow,.heartrow{display:grid;grid-template-columns:90px 1fr 54px;gap:10px;align-items:center;margin:12px 0}
+.track{height:7px;background:rgba(255,255,255,.08);border-radius:8px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:8px;transition:width .8s}
+.avgrow b,.heartrow b{text-align:right;font-family:Georgia,serif;font-weight:500}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.type{text-align:center;padding:17px 8px;border:1px solid rgba(230,215,175,.15);border-radius:14px;background:rgba(255,255,255,.025)}
+.type b{display:block;font:500 32px Georgia,serif}.type span{font-size:13px;color:#b7c5bd}
+footer{text-align:center;color:#83978d;font-size:12px;margin-top:18px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7bb38a;margin-right:7px;box-shadow:0 0 10px #7bb38a}
+.err{background:#b85d55}.pulse{animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.45}}
+@media(max-width:760px){
+ .wrap{padding-top:22px}.grid{grid-template-columns:repeat(2,1fr)}.lower{grid-template-columns:1fr}
+ .card{min-height:175px}.num{font-size:38px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">医 道 万 千 · 各 有 所 长</div>
+  <h1>四宗实时大阵</h1>
+  <div class="subtitle">现场匿名灵根分布 · 自动更新</div>
+</header>
+
+<section class="total">
+  <small>今日问道人数</small>
+  <strong id="total">—</strong>
+  <span> 人已入阵</span>
+</section>
+
+<section class="grid">
+ <div class="card sword"><div class="icon">⚔</div><div class="name">凌霄剑阁</div><div class="root">行道灵根 · 试</div><div><span class="num" id="swordN">—</span><span class="pct" id="swordP"></span></div><div class="bar"><i id="swordBar"></i></div></div>
+ <div class="card dan"><div class="icon">❧</div><div class="name">百草丹宗</div><div class="root">察微灵根 · 调</div><div><span class="num" id="danN">—</span><span class="pct" id="danP"></span></div><div class="bar"><i id="danBar"></i></div></div>
+ <div class="card fu"><div class="icon">⌁</div><div class="name">天机符门</div><div class="root">求真灵根 · 究</div><div><span class="num" id="fuN">—</span><span class="pct" id="fuP"></span></div><div class="bar"><i id="fuBar"></i></div></div>
+ <div class="card array"><div class="icon">◎</div><div class="name">万象阵宗</div><div class="root">观局灵根 · 构</div><div><span class="num" id="arrayN">—</span><span class="pct" id="arrayP"></span></div><div class="bar"><i id="arrayBar"></i></div></div>
+</section>
+
+<section class="lower">
+ <div class="panel">
+  <h2>全场四维平均灵根</h2>
+  <div class="avgrow"><span>剑 · 行道</span><div class="track"><i id="avgSwordBar" style="background:#c95b54"></i></div><b id="avgSword">—</b></div>
+  <div class="avgrow"><span>丹 · 察微</span><div class="track"><i id="avgDanBar" style="background:#70a879"></i></div><b id="avgDan">—</b></div>
+  <div class="avgrow"><span>符 · 求真</span><div class="track"><i id="avgFuBar" style="background:#6c9ed1"></i></div><b id="avgFu">—</b></div>
+  <div class="avgrow"><span>阵 · 观局</span><div class="track"><i id="avgArrayBar" style="background:#d7a34d"></i></div><b id="avgArray">—</b></div>
+ </div>
+ <div class="panel">
+  <h2>问道形态</h2>
+  <div class="types">
+   <div class="type"><b id="single">—</b><span>单灵根</span></div>
+   <div class="type"><b id="dual">—</b><span>双修</span></div>
+   <div class="type"><b id="balanced">—</b><span>四象灵根</span></div>
+  </div>
+  <h2 style="margin-top:22px">心之所向</h2>
+  <div class="heartrow"><span>剑 / 丹 / 符 / 阵</span><div class="track"><i id="heartBar" style="background:linear-gradient(90deg,#c95b54,#70a879,#6c9ed1,#d7a34d);width:100%"></i></div><b id="heartText">—</b></div>
+ </div>
+</section>
+
+<footer><span id="statusDot" class="dot pulse"></span><span id="status">正在接引大阵数据…</span> · 每 5 秒自动更新</footer>
+</div>
+<script>
+const URL="https://ywrzhiujyqkgnfejvzau.supabase.co", KEY="sb_publishable_VHo324LnN5PkOu5JH_acDA_j883kbpC";
+const $=id=>document.getElementById(id);
+function pct(n,t){return t?Math.round(n/t*100):0}
+function setSect(k,n,t){
+ $(k+"N").textContent=n; const p=pct(n,t); $(k+"P").textContent="· "+p+"%"; $(k+"Bar").style.width=p+"%";
+}
+function avg(k,v){v=Number(v||0); $("avg"+k).textContent=v.toFixed(1); $("avg"+k+"Bar").style.width=Math.min(100,v)+"%"}
+async function refresh(){
+ try{
+  const r=await fetch(URL+"/rest/v1/rpc/get_linggen_stats",{method:"POST",headers:{"apikey":KEY,"Authorization":"Bearer "+KEY,"Content-Type":"application/json"},body:"{}"});
+  if(!r.ok) throw new Error(await r.text());
+  const d=await r.json(), t=Number(d.total||0);
+  $("total").textContent=t;
+  setSect("sword",Number(d.sword_count||0),t); setSect("dan",Number(d.dan_count||0),t);
+  setSect("fu",Number(d.fu_count||0),t); setSect("array",Number(d.array_count||0),t);
+  avg("Sword",d.avg_sword); avg("Dan",d.avg_dan); avg("Fu",d.avg_fu); avg("Array",d.avg_array);
+  $("single").textContent=d.single_count||0; $("dual").textContent=d.dual_count||0; $("balanced").textContent=d.balanced_count||0;
+  $("heartText").textContent=[d.heart_sword||0,d.heart_dan||0,d.heart_fu||0,d.heart_array||0].join(" / ");
+  $("status").textContent="大阵已连接 · "+new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" 更新";
+  $("statusDot").classList.remove("err");
+ }catch(e){
+  $("status").textContent="暂未接通统计数据"; $("statusDot").classList.add("err");
+  console.error(e);
+ }
+}
+refresh(); setInterval(refresh,5000);
+</script>
+</body></html>
