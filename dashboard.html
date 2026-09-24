@@ -1,141 +1,17 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>医道修仙 · 四宗实时大阵</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V12.2｜医道修仙 · 教师控制台</title>
 <style>
-:root{
-  --paper:#efe6d0; --ink:#192d2b; --muted:#9fb1a8; --line:rgba(226,211,169,.25);
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#071917;color:#f3ead2;font-family:"Songti SC","STSong","Noto Serif SC",serif}
-body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 50% 12%,rgba(47,105,91,.35),transparent 32%),
-    linear-gradient(rgba(4,20,18,.82),rgba(5,19,17,.94)),
-    url("https://lqy19870604-afk.github.io/-yidao-linggen/");
-  overflow-x:hidden;
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
-  background-image:linear-gradient(120deg,transparent 0 48%,rgba(224,205,153,.06) 49%,transparent 50% 100%);
-  background-size:44px 44px;
-}
-.wrap{width:min(1180px,94vw);margin:auto;padding:34px 0 46px}
-header{text-align:center;margin-bottom:24px}
-.kicker{letter-spacing:.35em;color:#d7c68f;font-size:13px}
-h1{font-size:clamp(32px,5vw,58px);font-weight:500;letter-spacing:.12em;margin:10px 0 8px}
-.subtitle{color:#b7c5bd;font-size:15px}
-.total{
-  margin:25px auto 22px;width:min(540px,100%);padding:20px 28px;
-  border:1px solid var(--line);border-radius:20px;text-align:center;
-  background:rgba(13,42,37,.58);backdrop-filter:blur(10px);
-  box-shadow:0 20px 60px rgba(0,0,0,.22)
-}
-.total small{display:block;color:#c8b983;letter-spacing:.25em}
-.total strong{font:500 clamp(48px,8vw,82px)/1.05 Georgia,serif;color:#fff5d7}
-.total span{color:#aabbb2}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.card{
-  position:relative;overflow:hidden;min-height:205px;padding:24px 18px;border-radius:18px;
-  border:1px solid var(--line);background:rgba(10,34,31,.72);box-shadow:0 14px 40px rgba(0,0,0,.18)
-}
-.card:after{content:"";position:absolute;right:-35px;bottom:-45px;width:130px;height:130px;border-radius:50%;background:var(--glow);filter:blur(12px);opacity:.2}
-.icon{font-size:30px}.name{font-size:21px;margin:10px 0 2px}.root{font-size:13px;color:#b8c5bd}
-.num{font:500 45px/1 Georgia,serif;margin-top:22px}.pct{font-size:14px;color:#c8d1cc;margin-left:5px}
-.bar{height:5px;background:rgba(255,255,255,.08);border-radius:10px;margin-top:16px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .8s ease}
-.sword{--accent:#c95b54;--glow:#d7625a}.dan{--accent:#70a879;--glow:#70a879}.fu{--accent:#6c9ed1;--glow:#6c9ed1}.array{--accent:#d7a34d;--glow:#d7a34d}
-.lower{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}
-.panel{border:1px solid var(--line);border-radius:18px;background:rgba(10,34,31,.7);padding:22px}
-.panel h2{font-size:18px;font-weight:500;margin:0 0 18px;color:#e8dcb9}
-.avgrow,.heartrow{display:grid;grid-template-columns:90px 1fr 54px;gap:10px;align-items:center;margin:12px 0}
-.track{height:7px;background:rgba(255,255,255,.08);border-radius:8px;overflow:hidden}
-.track i{display:block;height:100%;border-radius:8px;transition:width .8s}
-.avgrow b,.heartrow b{text-align:right;font-family:Georgia,serif;font-weight:500}
-.types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.type{text-align:center;padding:17px 8px;border:1px solid rgba(230,215,175,.15);border-radius:14px;background:rgba(255,255,255,.025)}
-.type b{display:block;font:500 32px Georgia,serif}.type span{font-size:13px;color:#b7c5bd}
-footer{text-align:center;color:#83978d;font-size:12px;margin-top:18px}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7bb38a;margin-right:7px;box-shadow:0 0 10px #7bb38a}
-.err{background:#b85d55}.pulse{animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.45}}
-@media(max-width:760px){
- .wrap{padding-top:22px}.grid{grid-template-columns:repeat(2,1fr)}.lower{grid-template-columns:1fr}
- .card{min-height:175px}.num{font-size:38px}
-}
-</style>
-</head>
-<body>
-<div class="wrap">
-<header>
-  <div class="kicker">医 道 万 千 · 各 有 所 长</div>
-  <h1>四宗实时大阵</h1>
-  <div class="subtitle">现场匿名灵根分布 · 自动更新</div>
-</header>
-
-<section class="total">
-  <small>今日问道人数</small>
-  <strong id="total">—</strong>
-  <span> 人已入阵</span>
-</section>
-
-<section class="grid">
- <div class="card sword"><div class="icon">⚔</div><div class="name">凌霄剑阁</div><div class="root">行道灵根 · 试</div><div><span class="num" id="swordN">—</span><span class="pct" id="swordP"></span></div><div class="bar"><i id="swordBar"></i></div></div>
- <div class="card dan"><div class="icon">❧</div><div class="name">百草丹宗</div><div class="root">察微灵根 · 调</div><div><span class="num" id="danN">—</span><span class="pct" id="danP"></span></div><div class="bar"><i id="danBar"></i></div></div>
- <div class="card fu"><div class="icon">⌁</div><div class="name">天机符门</div><div class="root">求真灵根 · 究</div><div><span class="num" id="fuN">—</span><span class="pct" id="fuP"></span></div><div class="bar"><i id="fuBar"></i></div></div>
- <div class="card array"><div class="icon">◎</div><div class="name">万象阵宗</div><div class="root">观局灵根 · 构</div><div><span class="num" id="arrayN">—</span><span class="pct" id="arrayP"></span></div><div class="bar"><i id="arrayBar"></i></div></div>
-</section>
-
-<section class="lower">
- <div class="panel">
-  <h2>全场四维平均灵根</h2>
-  <div class="avgrow"><span>剑 · 行道</span><div class="track"><i id="avgSwordBar" style="background:#c95b54"></i></div><b id="avgSword">—</b></div>
-  <div class="avgrow"><span>丹 · 察微</span><div class="track"><i id="avgDanBar" style="background:#70a879"></i></div><b id="avgDan">—</b></div>
-  <div class="avgrow"><span>符 · 求真</span><div class="track"><i id="avgFuBar" style="background:#6c9ed1"></i></div><b id="avgFu">—</b></div>
-  <div class="avgrow"><span>阵 · 观局</span><div class="track"><i id="avgArrayBar" style="background:#d7a34d"></i></div><b id="avgArray">—</b></div>
- </div>
- <div class="panel">
-  <h2>问道形态</h2>
-  <div class="types">
-   <div class="type"><b id="single">—</b><span>单灵根</span></div>
-   <div class="type"><b id="dual">—</b><span>双修</span></div>
-   <div class="type"><b id="balanced">—</b><span>四象灵根</span></div>
-  </div>
-  <h2 style="margin-top:22px">心之所向</h2>
-  <div class="heartrow"><span>剑 / 丹 / 符 / 阵</span><div class="track"><i id="heartBar" style="background:linear-gradient(90deg,#c95b54,#70a879,#6c9ed1,#d7a34d);width:100%"></i></div><b id="heartText">—</b></div>
- </div>
-</section>
-
-<footer><span id="statusDot" class="dot pulse"></span><span id="status">正在接引大阵数据…</span> · 每 5 秒自动更新</footer>
-</div>
+:root{--jade:#287d72;--ink:#203e39;--muted:#72857f;--paper:#f7f6f0;--card:#fff;--line:#dde5df;--gold:#c49a4b}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#f9f8f3,#eef5f1);color:var(--ink);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}.wrap{width:min(1180px,94vw);margin:auto;padding:34px 0 48px}header{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}.kicker{font-size:12px;letter-spacing:.22em;color:#8a9b95;font-weight:700}h1{font-family:"Songti SC","STSong",serif;font-size:clamp(34px,5vw,58px);margin:8px 0 0;color:#24524b}.teacher{color:#87958f;font-size:13px}.control{background:#fff;border:1px solid var(--line);border-radius:26px;padding:18px;display:grid;grid-template-columns:1fr auto;gap:16px;box-shadow:0 14px 40px rgba(47,74,66,.06);margin-bottom:18px}.current small{display:block;color:#8b9994;margin-bottom:7px}.current strong{font-size:22px}.current code{display:block;margin-top:8px;color:#71817c;font-size:12px;word-break:break-all}.btns{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:15px;padding:12px 16px;background:#edf3ef;color:#365f58;font-weight:650;cursor:pointer}.btn.primary{background:var(--jade);color:#fff}.btn.gold{background:#f5ecd9;color:#88692f}.total{margin:18px auto;width:min(560px,100%);text-align:center}.total small{display:block;color:#8d9b96;letter-spacing:.14em}.total strong{font:700 clamp(58px,8vw,86px)/1 Georgia,serif;color:#24564f}.total span{color:#7f918b}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 30px rgba(45,72,64,.05)}.card{padding:20px;min-height:180px}.icon{font-size:25px}.name{font-weight:700;margin:10px 0 3px}.root{font-size:12px;color:#84948f}.num{font:700 42px Georgia,serif;margin-top:20px;display:inline-block}.pct{font-size:13px;color:#7d8c87}.bar,.track{height:7px;background:#edf0ed;border-radius:9px;overflow:hidden;margin-top:13px}.bar i,.track i{display:block;height:100%;border-radius:9px;transition:.5s}.sword i{background:#c7554d}.dan i{background:#4f9a76}.fu i{background:#4b88bd}.array i{background:#c79235}.lower{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}.panel{padding:22px}.panel h2{font-size:16px;margin:0 0 16px;color:#61756f}.avgrow{display:grid;grid-template-columns:90px 1fr 50px;gap:10px;align-items:center;margin:12px 0}.avgrow .track{margin:0}.types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.type{text-align:center;padding:16px 6px;background:#f7f9f7;border-radius:16px}.type b{display:block;font:700 30px Georgia,serif}.type span{font-size:12px;color:#81918c}.session-panel{margin-top:12px}.session-list{display:flex;gap:8px;flex-wrap:wrap}.session-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;cursor:pointer;color:#55716a}.session-chip.active{background:#e5f2ed;border-color:#7db4a9;color:#256b62}.modal{position:fixed;inset:0;background:rgba(22,40,36,.55);display:none;place-items:center;padding:18px;z-index:20;backdrop-filter:blur(8px)}.modal.show{display:grid}.dialog{width:min(480px,100%);background:#fff;border-radius:26px;padding:24px;box-shadow:0 30px 100px rgba(0,0,0,.25)}.dialog h3{margin:0 0 8px}.dialog p{color:#71827d;font-size:13px;line-height:1.6}.dialog input{width:100%;padding:14px 15px;border:1px solid #dce4df;border-radius:14px;font-size:16px;outline:none}.dialog input:focus{border-color:#68a99e}.qrbox{text-align:center}.qrbox img{width:260px;height:260px;background:#fff;border:12px solid #fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.08)}.linkbox{font-size:12px;color:#687a74;word-break:break-all;background:#f6f8f6;border-radius:12px;padding:12px;margin:12px 0}.row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}.status{text-align:center;color:#82938d;font-size:12px;margin-top:16px}@media(max-width:760px){header{display:block}.control{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.lower{grid-template-columns:1fr}.btns{justify-content:flex-start}}
+</style></head><body><div class="wrap"><header><div><div class="kicker">YIDAO · TEACHER CONSOLE</div><h1>教师控制台</h1></div><div class="teacher">医道修仙 · 灵根测试</div></header>
+<section class="control"><div class="current"><small>当前场次</small><strong id="sessionName">试玩 / 默认场</strong><code id="sessionId">general</code></div><div class="btns"><button class="btn primary" onclick="openNew()">＋ 新建场次</button><button class="btn gold" onclick="showQR()">▦ 本场二维码</button><button class="btn" onclick="copyLink()">复制本场链接</button></div></section>
+<section class="total"><small>本场问道人数</small><strong id="total">—</strong><span> 人已入阵</span></section>
+<section class="grid"><div class="card sword"><div class="icon">⚔</div><div class="name">凌霄剑阁</div><div class="root">行道灵根 · 试</div><div><span class="num" id="swordN">—</span><span class="pct" id="swordP"></span></div><div class="bar"><i id="swordBar"></i></div></div><div class="card dan"><div class="icon">❧</div><div class="name">百草丹宗</div><div class="root">察微灵根 · 调</div><div><span class="num" id="danN">—</span><span class="pct" id="danP"></span></div><div class="bar"><i id="danBar"></i></div></div><div class="card fu"><div class="icon">⌁</div><div class="name">天机符门</div><div class="root">求真灵根 · 究</div><div><span class="num" id="fuN">—</span><span class="pct" id="fuP"></span></div><div class="bar"><i id="fuBar"></i></div></div><div class="card array"><div class="icon">◎</div><div class="name">万象阵宗</div><div class="root">观局灵根 · 构</div><div><span class="num" id="arrayN">—</span><span class="pct" id="arrayP"></span></div><div class="bar"><i id="arrayBar"></i></div></div></section>
+<section class="lower"><div class="panel"><h2>本场四维平均灵根</h2><div class="avgrow"><span>剑 · 行道</span><div class="track"><i id="avgSwordBar" style="background:#c7554d"></i></div><b id="avgSword">—</b></div><div class="avgrow"><span>丹 · 察微</span><div class="track"><i id="avgDanBar" style="background:#4f9a76"></i></div><b id="avgDan">—</b></div><div class="avgrow"><span>符 · 求真</span><div class="track"><i id="avgFuBar" style="background:#4b88bd"></i></div><b id="avgFu">—</b></div><div class="avgrow"><span>阵 · 观局</span><div class="track"><i id="avgArrayBar" style="background:#c79235"></i></div><b id="avgArray">—</b></div></div><div class="panel"><h2>问道形态</h2><div class="types"><div class="type"><b id="single">—</b><span>单灵根</span></div><div class="type"><b id="dual">—</b><span>双修</span></div><div class="type"><b id="balanced">—</b><span>四象灵根</span></div></div><h2 style="margin-top:20px">心之所向</h2><div id="heartText" style="color:#667a74">—</div></div></section>
+<section class="panel session-panel"><h2>历史 / 已建场次</h2><div class="session-list" id="sessionList"></div></section><div class="status" id="status">正在接引本场数据…</div></div>
+<div id="newModal" class="modal"><div class="dialog"><h3>新建场次</h3><p>例如“2026新教师培训”。系统会自动生成独立场次 ID 和学生专属链接。</p><input id="newName" placeholder="输入场次名称"><div class="row"><button class="btn" onclick="closeModal('newModal')">取消</button><button class="btn primary" onclick="createSession()">生成场次</button></div></div></div>
+<div id="qrModal" class="modal"><div class="dialog qrbox"><h3 id="qrTitle">本场二维码</h3><p>学生扫码后，结果会自动归入当前场次。</p><img id="qrImg" alt="本场二维码"><div class="linkbox" id="qrLink"></div><div class="row"><button class="btn" onclick="closeModal('qrModal')">关闭</button><button class="btn primary" onclick="copyLink()">复制链接</button></div></div></div>
 <script>
-const URL="https://ywrzhiujyqkgnfejvzau.supabase.co", KEY="sb_publishable_VHo324LnN5PkOu5JH_acDA_j883kbpC";
-const $=id=>document.getElementById(id);
-function pct(n,t){return t?Math.round(n/t*100):0}
-function setSect(k,n,t){
- $(k+"N").textContent=n; const p=pct(n,t); $(k+"P").textContent="· "+p+"%"; $(k+"Bar").style.width=p+"%";
-}
-function avg(k,v){v=Number(v||0); $("avg"+k).textContent=v.toFixed(1); $("avg"+k+"Bar").style.width=Math.min(100,v)+"%"}
-async function refresh(){
- try{
-  const r=await fetch(URL+"/rest/v1/rpc/get_linggen_stats",{method:"POST",headers:{"apikey":KEY,"Authorization":"Bearer "+KEY,"Content-Type":"application/json"},body:"{}"});
-  if(!r.ok) throw new Error(await r.text());
-  const d=await r.json(), t=Number(d.total||0);
-  $("total").textContent=t;
-  setSect("sword",Number(d.sword_count||0),t); setSect("dan",Number(d.dan_count||0),t);
-  setSect("fu",Number(d.fu_count||0),t); setSect("array",Number(d.array_count||0),t);
-  avg("Sword",d.avg_sword); avg("Dan",d.avg_dan); avg("Fu",d.avg_fu); avg("Array",d.avg_array);
-  $("single").textContent=d.single_count||0; $("dual").textContent=d.dual_count||0; $("balanced").textContent=d.balanced_count||0;
-  $("heartText").textContent=[d.heart_sword||0,d.heart_dan||0,d.heart_fu||0,d.heart_array||0].join(" / ");
-  $("status").textContent="大阵已连接 · "+new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" 更新";
-  $("statusDot").classList.remove("err");
- }catch(e){
-  $("status").textContent="暂未接通统计数据"; $("statusDot").classList.add("err");
-  console.error(e);
- }
-}
-refresh(); setInterval(refresh,5000);
-</script>
-</body></html>
+const URL="https://ywrzhiujyqkgnfejvzau.supabase.co",KEY="sb_publishable_VHo324LnN5PkOu5JH_acDA_j883kbpC",BASE="https://lqy19870604-afk.github.io/-yidao-linggen/";const $=x=>document.getElementById(x);let sessions=JSON.parse(localStorage.getItem("linggen_sessions")||'[{"id":"general","name":"试玩 / 默认场"}]'),current=localStorage.getItem("linggen_current_session")||"general";if(!sessions.some(s=>s.id===current))current="general";
+function slug(){return 's-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+Math.random().toString(36).slice(2,7)}function save(){localStorage.setItem("linggen_sessions",JSON.stringify(sessions));localStorage.setItem("linggen_current_session",current)}function cur(){return sessions.find(s=>s.id===current)||sessions[0]}function link(){return BASE+'?session='+encodeURIComponent(current)}function renderSessions(){let c=cur();$('sessionName').textContent=c.name;$('sessionId').textContent=c.id;$('sessionList').innerHTML=sessions.map(s=>`<button class="session-chip ${s.id===current?'active':''}" onclick="switchSession('${s.id}')">${s.name}</button>`).join('')}function switchSession(id){current=id;save();renderSessions();refresh()}function openNew(){$('newModal').classList.add('show');$('newName').focus()}function closeModal(id){$(id).classList.remove('show')}function createSession(){let n=$('newName').value.trim();if(!n)return alert('请输入场次名称');let id=slug();sessions.push({id,name:n,created_at:new Date().toISOString()});current=id;save();$('newName').value='';closeModal('newModal');renderSessions();showQR();refresh()}function showQR(){let u=link();$('qrTitle').textContent=cur().name;$('qrLink').textContent=u;$('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=520x520&margin=18&data='+encodeURIComponent(u);$('qrModal').classList.add('show')}async function copyLink(){await navigator.clipboard.writeText(link());alert('本场链接已复制')}
+function pct(n,t){return t?Math.round(n/t*100):0}function setSect(k,n,t){$(k+'N').textContent=n;let p=pct(n,t);$(k+'P').textContent=' · '+p+'%';$(k+'Bar').style.width=p+'%'}function avg(k,v){v=Number(v||0);$('avg'+k).textContent=v.toFixed(1);$('avg'+k+'Bar').style.width=Math.min(100,v)+'%'}
+async function refresh(){try{let r=await fetch(URL+'/rest/v1/rpc/get_linggen_stats_by_session',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},body:JSON.stringify({p_session:current})});if(!r.ok)throw new Error(await r.text());let d=await r.json(),t=Number(d.total||0);$('total').textContent=t;setSect('sword',Number(d.sword_count||0),t);setSect('dan',Number(d.dan_count||0),t);setSect('fu',Number(d.fu_count||0),t);setSect('array',Number(d.array_count||0),t);avg('Sword',d.avg_sword);avg('Dan',d.avg_dan);avg('Fu',d.avg_fu);avg('Array',d.avg_array);$('single').textContent=d.single_count||0;$('dual').textContent=d.dual_count||0;$('balanced').textContent=d.balanced_count||0;$('heartText').textContent='剑 '+(d.heart_sword||0)+' · 丹 '+(d.heart_dan||0)+' · 符 '+(d.heart_fu||0)+' · 阵 '+(d.heart_array||0);$('status').textContent='本场数据已更新 · '+new Date().toLocaleTimeString('zh-CN')}catch(e){$('status').textContent='尚未启用“按场次统计”函数；运行配套 SQL 后即可使用。';console.error(e)}}renderSessions();refresh();setInterval(refresh,5000)
+</script><div style="position:fixed;right:12px;bottom:8px;font:12px -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;color:rgba(255,255,255,.35);pointer-events:none">教师控制台 · V12.2</div></body></html>
